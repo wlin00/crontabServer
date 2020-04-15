@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="sendserver()">server send</button>
+
+
+    <script>
+       const ws =new WebSocket('ws://localhost:8080')
+       
+       ws.onopen=function(){
+           console.log('已连接');
+       } 
+       ws.onmessage =(msg)=>{
+           console.log('msg from server ' + msg)
+       }
+       ws.onclose=(msg)=>{
+           console.log('连接关闭')
+       }
+
+       function sendserver(){
+           ws.send('client_msg')
+       }
+
+    </script>
+</body>
+</html>
