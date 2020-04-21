@@ -78,7 +78,7 @@ router.post('/uploadFile', upload1.single('file'), (req, res) => {  //第二个�
     //限制文件大小
     let { size, mimetype, path } = req.file;
     //限制文件类型
-    let types = ['jpg', 'jpeg', 'png', 'gif', 'pdf']
+    let types = ['jpg', 'jpeg', 'png', 'gif', 'pdf','doc','docx']
     let type = mimetype.split('/')[1];
 
     if (size > 1000000) { //对文件上传的限制

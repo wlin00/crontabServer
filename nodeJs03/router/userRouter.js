@@ -76,12 +76,13 @@ router.post('/login', (req, res) => {
     }
     User.find({ us: us, ps: ps })
         .then((data) => {
-            if (data.length > 0) {               
+            if (data.length > 0) { 
                 if (user[us] === undefined) {
                     user[us] = true
                     req.session.login = true;
                     req.session.name = us;
                     //登陆成功，用户信息记录在session里     
+                    console.log(user)              
 
                     return res.send({ err: 0, msg: req.session, data: data });
                 } else {
@@ -362,13 +363,10 @@ router.post('/getUserByKw', (req, res) => {
  * @apiSuccess {String} lastname  Lastname of the User.
  */
 
-router.post('/getAllUser', (req, res) => {
+router.post('/getAllUser', (req, res) => { //获取全部用户接口，分页查询
     //分页处理
     let { page = 1, limit = 5 } = req.body;
     let count = 0;//总数据条数
-
-
-
     User.find()
         .then((list) => {
             count = list.length;//拿到总数据条数,对用户搜索后的数据做分页查询
@@ -719,6 +717,7 @@ router.post('/del',(req,res)=>{
  */
 router.post('/check',(req,res)=>{
     if(!req.session.login){
+        user[req.headers.username] = undefined //清除map中的key
         return res.send({err:-999,msg:'登陆已过期,请重新登陆!'})
     }
     else{
@@ -742,6 +741,7 @@ router.post('/checkBack',(req,res)=>{
         return res.send({err:-1,msg:'参数错误'})
     }
     if(!req.session.login){
+        user[req.headers.username] = undefined //清除map中的key
         return res.send({err:-999,msg:'登陆已过期,请重新登陆!'})
     }
     else{
