@@ -8,9 +8,31 @@ const request = require('request')
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
 
+//  调用外部接口请求的函数，用于获取权限对应的hash值
+function httprequest(url,data){
+    return new Promise((resolve,rej)=>{
+        request({
+            url: url,
+            method: "POST",
+            json: true,
+            headers: {
+                "content-type": "application/json",
+            },
+            body: data
+        }, function(error, response, body) {
+            if (!error && response.statusCode == 200) {
+                // node服务器请求外部API成功，函数返回获取后的hash值
+                res = body.data.authHash 
+                resolve(res)
+            }
+        });
+    })
+ 
+};
+
 
 /**
- * @api {post} /user/reg 用户注册 --- 添加用户
+ * @api {post} /user/reg 用户添加 --- 添加用户
  * @apiName 用户注册
  * @apiGroup User
  *
@@ -78,16 +100,21 @@ router.post('/login', (req, res) => {
         .then((data) => {
             if (data.length > 0) { 
                 if (user[us] === undefined) {
+                    
+                    //登陆成功后的操作 - 存储sessionId在内存map中，设置请求头session标识符
                     user[us] = true
+                    //登陆成功，用户信息记录在session里     
                     req.session.login = true;
                     req.session.name = us;
-                    //登陆成功，用户信息记录在session里     
-                    console.log(user)              
-
-                    return res.send({ err: 0, msg: req.session, data: data });
+                    //打印当前登陆用户和权限字段，并用这个字段作为参数请求外部接口，返回前端转化后的hash。
+                    console.log(user)
+                    let postData = {authRole:String(data[0].right)}
+                    httprequest('http://118.24.218.213:8000/acc/authhash',postData).then((hash)=>{
+                        console.log('func_d',hash)
+                        return res.send({ err: 0, msg: req.session, data: data, hash });
+                    })
                 } else {
                     console.log(user[us])
-
                     return res.send({ err: -5, msg: '该用户已登陆' });
                 }
             }
@@ -128,11 +155,18 @@ router.post('/loginBack', (req, res) => {
 
                 if (user[us] === undefined) {
 
-                    user[us] = true
-                    req.session.login = true;
-                    req.session.name = us;
-                    //登陆成功，用户信息记录在session里     
-                    return res.send({ err: 0, msg: req.session, data: data });
+                     //登陆成功后的操作 - 存储sessionId在内存map中，设置请求头session标识符
+                     user[us] = true
+                     //登陆成功，用户信息记录在session里     
+                     req.session.login = true;
+                     req.session.name = us;
+                     //打印当前登陆用户和权限字段，并用这个字段作为参数请求外部接口，返回前端转化后的hash。
+                    console.log(user)
+                    let postData = {authRole:String(data[0].right)}
+                    httprequest('http://118.24.218.213:8000/acc/authhash',postData).then((hash)=>{
+                        console.log('func_d',hash)
+                        return res.send({ err: 0, msg: req.session, data: data, hash });
+                    })
                 } else {
                     return res.send({ err: -5, msg: '该用户已登陆' });
                 }
@@ -637,10 +671,11 @@ router.post('/updateImg', (req, res) => {
 
 
 /**
- * @api {post} /user/updatePwd
+ * @api {post} /user/updatePwd 修改密码接口
  * @apiName update
  * @apiGroup User
  *
+ * //接收参数区域
  * @apiParam {String} _id 用户id(required).
  * @apiParam {String} ps   原密码.
  * @apiParam {String} newPs1   新密码.

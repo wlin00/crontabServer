@@ -61,14 +61,6 @@ const myFileRouter = require('./router/myFileRouter')
 //毕设区域
 app.use('/zjj/user',(req,res,next)=>{
    next()
-   // if(req.session.login){
-      // next()
-      // return
-   // }
-   // else{
-      // return res.send({err:-999,msg:'登陆过期，请重新登陆！'})
-      // console.log('checkFail',req.session)
-   // }
 },userRouter); //引入userRouter路由作为路径/user下的中间件
 
 app.use('/zjj/file',fileRouter);//引入fileRouter路由作为路径/file下的中间件
