@@ -10,7 +10,7 @@ const session = require('express-session')
 
 //  调用外部接口请求的函数，用于获取权限对应的hash值
 function httprequest(url,data){
-    return new Promise((resolve,rej)=>{
+    return new Promise((resolve,reject)=>{
         request({
             url: url,
             method: "POST",
@@ -24,6 +24,9 @@ function httprequest(url,data){
                 // node服务器请求外部API成功，函数返回获取后的hash值
                 res = body.data.authHash 
                 resolve(res)
+            }
+            else{
+                reject('acc error!')
             }
         });
     })
@@ -112,6 +115,8 @@ router.post('/login', (req, res) => {
                     httprequest('http://118.24.218.213:8000/acc/authhash',postData).then((hash)=>{
                         console.log('func_d',hash)
                         return res.send({ err: 0, msg: req.session, data: data, hash });
+                    },(err)=>{
+                        return res.send({ err: -500, msg: err });
                     })
                 } else {
                     console.log(user[us])
@@ -166,6 +171,8 @@ router.post('/loginBack', (req, res) => {
                     httprequest('http://118.24.218.213:8000/acc/authhash',postData).then((hash)=>{
                         console.log('func_d',hash)
                         return res.send({ err: 0, msg: req.session, data: data, hash });
+                    },(err)=>{
+                        return res.send({ err: -500, msg: err });
                     })
                 } else {
                     return res.send({ err: -5, msg: '该用户已登陆' });
@@ -356,13 +363,10 @@ router.post('/getUserByKw', (req, res) => {
     //分页处理
     let { Kw, page = 1, limit = 5 } = req.body;
     let count = 0;//总数据条数
-
     if (!Kw) {
         return res.send({ err: -1, msg: '参数错误' }); //输入检测
     }
-
     let reg = new RegExp(Kw) //对输入的用户名关键字进行正则匹配，对name字段做模糊查询
-
     User.find(
         { name: { $regex: reg } }
         )
