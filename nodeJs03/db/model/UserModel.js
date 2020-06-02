@@ -11,11 +11,7 @@ var schema1 =  new Schema({
     phone:{type:Number,default:0},
     img:{type:String,default:''},
     right:{type:Number,default:0} //决定是否具备管理员权限； 0-1对应-->普通用户-管理员 
-
-
 });
-
 //将schema转化为model，与数据库对应名字的集合相关联
 var User = mongoose.model('User',schema1);
-
 module.exports =  User;

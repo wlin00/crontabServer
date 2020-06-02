@@ -5,8 +5,6 @@ var Schema = mongoose.Schema;
 var schema1 =  new Schema({
     img:{type:String,default:''},
 });
-
 //将schema转化为model，与数据库对应名字的集合相关联
 var Pic = mongoose.model('Pic',schema1);
-
 module.exports =  Pic;

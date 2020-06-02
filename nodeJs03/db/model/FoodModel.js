@@ -10,8 +10,6 @@ var foodSchema =  new Schema({
     typeid : {type:Number,require:true},    //菜的种类：0-1-2 对应 凉菜-热菜-食堂菜
     img : {type:String,require:true}
 });
-
 //将schema转化为model，与数据库对应名字的集合相关联
 var Food = mongoose.model('Food',foodSchema);
-
 module.exports =  Food;

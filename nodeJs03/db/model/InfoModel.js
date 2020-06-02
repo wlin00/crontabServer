@@ -8,10 +8,7 @@ var schema1 =  new Schema({
     time:{type:String,default:''},
     title:{type:String,default:''},
     content:{type:String,default:''},
-    
 });
-
 //将schema转化为model，与数据库对应名字的集合相关联
 var Info = mongoose.model('Info',schema1);
-
 module.exports =  Info;

@@ -9,10 +9,7 @@ var schema1 =  new Schema({
     time:{type:String,default:''},
     type:{type:Number,default:''},
        //type: 1 -- 学习资料； 2 -- 项目文件 ； 3 -- 规章制度； 4 -- 备用文件
-
 });
-
 //将schema转化为model，与数据库对应名字的集合相关联
 var myFile = mongoose.model('myFile',schema1);
-
 module.exports =  myFile;
