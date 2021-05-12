@@ -20,7 +20,7 @@
     "jsdom": "^15.2.1",
     "mongoose": "^5.7.7",
     "multer": "^1.4.2",
-    "nodemailer": "^6.3.1",
+    "nodemailer": "^6.4.16",
     "path": "^0.12.7",
     "querystring": "^0.2.0",
     "request": "^2.88.0",
